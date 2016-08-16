@@ -1,0 +1,22 @@
+input {
+    udp {
+        port => 5000
+        codec => json
+    }
+}
+
+output {
+    elasticsearch {
+        hosts => ["{{ var "ES_ENDPOINT" }}:443"]
+        ssl => true
+        index => "{{ var "ES_INDEX" | default "logstash" }}-%{+YYYY.MM.dd}"
+    }
+}
+
+filter {
+    grok {
+        match => [
+            "message", "(?m)%{TIMESTAMP_ISO8601:timestamp}%{SPACE}%{LOGLEVEL:level}%{SPACE}%{NUMBER:pid}%{SPACE}---%{SPACE}\[(?<thread>[\sA-Za-z0-9-]+)\]%{SPACE}%{JAVACLASS:class}%{SPACE}:%{SPACE}%{GREEDYDATA:logmessage}"
+        ]
+    }
+}

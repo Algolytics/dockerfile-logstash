@@ -14,9 +14,14 @@ output {
 }
 
 filter {
+    multiline {
+        pattern => "^(%{TIMESTAMP_ISO8601})|(\[[A-Za-z0-9-]+\])"
+        negate => true
+        what => "previous"
+    }
     grok {
         match => [
-            "message", "(?m)%{TIMESTAMP_ISO8601:timestamp}%{SPACE}%{LOGLEVEL:level}%{SPACE}%{NUMBER:pid}%{SPACE}---%{SPACE}\[(?<thread>[\sA-Za-z0-9-]+)\]%{SPACE}%{JAVACLASS:class}%{SPACE}:%{SPACE}%{GREEDYDATA:logmessage}"
+            "message", "(?m)%{TIMESTAMP_ISO8601:logtime}%{SPACE}%{LOGLEVEL:loglevel}%{SPACE}%{NUMBER:pid}%{SPACE}---%{SPACE}\[(?<thread>[\sA-Za-z0-9-]+)\]%{SPACE}((%{JAVACLASS:class})|(?<class>[A-Za-z0-9\.\[\]\/]+))%{SPACE}:%{SPACE}%{GREEDYDATA:logmessage}"
         ]
     }
 }

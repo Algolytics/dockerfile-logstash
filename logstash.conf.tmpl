@@ -3,10 +3,21 @@ input {
         port => 5000
         codec => json
         buffer_size => 65507
+        codec => multiline {
+            pattern => "^(%{TIMESTAMP_ISO8601})|(\[[A-Za-z0-9-]+\])"
+            negate => true
+            what => "previous"         
+        }
     }
     tcp {
         port  => 5000
         codec => json
+        codec => multiline {
+            pattern => "^(%{TIMESTAMP_ISO8601})|(\[[A-Za-z0-9-]+\])"
+            negate => true
+            what => "previous"         
+        }
+
     }
 }
 
@@ -19,11 +30,6 @@ output {
 }
 
 filter {
-    multiline {
-        pattern => "^(%{TIMESTAMP_ISO8601})|(\[[A-Za-z0-9-]+\])"
-        negate => true
-        what => "previous"
-    }
     grok {
         match => [
             "message", "(?m)%{TIMESTAMP_ISO8601:logtime}%{SPACE}%{LOGLEVEL:loglevel}%{SPACE}%{NUMBER:pid}%{SPACE}---%{SPACE}\[(?<thread>[\sA-Za-z0-9-]+)\]%{SPACE}((%{JAVACLASS:class})|(?<class>[A-Za-z0-9\.\[\]\/]+))%{SPACE}:%{SPACE}%{GREEDYDATA:logmessage}"

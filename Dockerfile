@@ -1,4 +1,4 @@
-FROM logstash:2.4
+FROM logstash
 MAINTAINER Mikołaj Olszewski <mikolaj.olszewski@algolytics.pl>
 
 ENV ENTRYKIT_FILE=entrykit_0.4.0_Linux_x86_64.tgz

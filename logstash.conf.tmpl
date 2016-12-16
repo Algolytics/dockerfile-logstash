@@ -1,3 +1,7 @@
+pipeline:
+  batch:
+    size: 50
+
 input {
     udp {
         port => 5000
@@ -15,7 +19,7 @@ output {
         hosts => ["{{ var "ES_ENDPOINT" }}:443"]
         ssl => true
         index => "{{ var "ES_INDEX" | default "logstash" }}-%{+YYYY.MM.dd}"
-        flush_size => 100
+        flush_size => 50
     }
 }
 

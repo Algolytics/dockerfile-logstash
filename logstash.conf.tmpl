@@ -15,7 +15,7 @@ output {
         hosts => ["{{ var "ES_ENDPOINT" }}:443"]
         ssl => true
         index => "{{ var "ES_INDEX" | default "logstash" }}-%{+YYYY.MM.dd}"
-        flush_size => 5
+        flush_size => 50
     }
 }
 
